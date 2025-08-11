@@ -46,3 +46,34 @@ Flutter SDK (latest stable)
 Dart SDK (bundled with Flutter)
 Android Studio / VS Code with Flutter plugin
 An Android or iOS device/emulator
+
+
+-----------------------------------------------------------------------------------------------------------------
+
+
+Design document — Send Money Application
+1. Overview
+Purpose: mobile app to send and view transactions (local + remote), with session management, login, routing, and BLoC state management.
+Architecture style: layered MVVM-like with Repository + BLoC.
+
+Major layers:
+UI (screens, widgets)
+State (BLoCs / Cubits)
+Domain / Repositories (MayaRepository)
+Data / Providers (ApiProvider using Dio, local mocks)
+Infrastructure (SessionState, SharedPreferences, Router)
+
+2. High-level components
+MyApp — top-level widget; wires providers and router.
+SessionState — holds login state and token; used by router and API auth.
+LoginBloc — handles login workflow.
+TransactionBloc — fetches transactions (combining local mock data + API).
+MayaRepository — repository exposing getTransactions, sendTransaction, login.
+ApiProvider — low-level Dio client that calls endpoints (posts, attachments, etc.).
+MyRouter — navigation/router setup (MaterialApp.router).
+SharedPreferences — persistent store for username/token/session flags.
+
+3. Non-functional concerns
+Testability: BLoCs and Repository separated from UI; providers can be mocked.
+Performance: Use server filtering when possible (avoid fetching all posts then filtering).
+Security: Token stored in SharedPreferences — consider secure storage for production.
